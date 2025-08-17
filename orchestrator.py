@@ -46,7 +46,7 @@ from config import (
     PLAN_SEC, CODEGEN1_SEC, RUN1_SEC, REPAIR_CODEGEN_SEC, REPAIR_RUN_SEC
 )
 from llm_client import plan_task, generate_code, compose_answer
-from executor import run_user_code
+from executor_b64 import run_user_code
 from format_handler import make_format_spec, validate_and_coerce, ValidationError, make_dummy_answer
 
 def now_monotonic() -> float:
