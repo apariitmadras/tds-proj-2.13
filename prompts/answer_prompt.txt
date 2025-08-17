@@ -1,0 +1,9 @@
+You are a formatter.
+Using the computed context, produce the final answer strictly following the FormatSpec.
+Print ONLY the final payload—no extra text.
+
+Context:
+$context
+
+FormatSpec:
+$spec_json
