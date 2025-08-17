@@ -14,7 +14,7 @@ def health():
 @app.post("/api/", response_class=PlainTextResponse)
 async def api_entry(request: Request):
     form = await request.form()
-    uploads: Dict[str, UploadFile] = {k:v for k,v in form.multi_items() if isinstance(v, UploadFile)}
+    uploads: Dict[str, UploadFile] = {k: v for k, v in form.multi_items() if isinstance(v, UploadFile)}
     if "questions.txt" not in uploads:
         raise HTTPException(400, "questions.txt is required; field name must be 'questions.txt'")
 
@@ -27,8 +27,14 @@ async def api_entry(request: Request):
         for field, up in uploads.items():
             data = await up.read()
             path = os.path.join(attach_dir, up.filename or field)
-            with open(path, "wb") as f: f.write(data)
-            saved.append({"field": field, "filename": up.filename or field, "path": path, "content_type": up.content_type})
+            with open(path, "wb") as f:
+                f.write(data)
+            saved.append({
+                "field": field,
+                "filename": up.filename or field,
+                "path": path,
+                "content_type": up.content_type
+            })
 
         # read questions.txt
         qpath = next(s["path"] for s in saved if s["field"] == "questions.txt")
@@ -42,3 +48,8 @@ async def api_entry(request: Request):
         raise HTTPException(500, f"failure: {e}")
     finally:
         shutil.rmtree(job_dir, ignore_errors=True)
+
+# Alias to accept POST /api (no trailing slash) without a redirect.
+@app.post("/api", include_in_schema=False)
+async def api_entry_alias(request: Request):
+    return await api_entry(request)
